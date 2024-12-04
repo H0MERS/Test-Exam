@@ -43,15 +43,18 @@ namespace TranRoutes.Services
 
             if (_visited.Contains(current))
             {
-                string path = String.Join("=>", currentRoute.Select(s => s.Path));
-                int totalDistance = currentRoute.Sum(s => s.Distance);
-                int stops = currentRoute.Count() - 1;
-                _routing.Add((path, totalDistance, stops));
                 return;
             }
 
             _visited.Add(current);
             currentRoute.Add(current);
+
+            string path = String.Join("=>", currentRoute.Select(s => s.Path));
+            int totalDistance = currentRoute.Sum(s => s.Distance);
+            int stops = currentRoute.Count() - 1;
+            var route = (path, totalDistance, stops);
+            if (source == _destination && totalDistance < _distance && (!_routing.Contains(route)))
+                _routing.Add(route);
 
             var record = _records.SingleOrDefault(f => f.Source == source);
             if (record == null)
