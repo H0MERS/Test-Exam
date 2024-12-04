@@ -19,6 +19,7 @@ namespace TranRoutes.Services
 
         HashSet<(string Path, int Distance)> _result = new();
         HashSet<(string Path, int Distance)> _routing = new();
+        HashSet<(string Value, int Distance)> _visited = new();
         public NumberOfTripsByDistance(IRouteRepository repo)
         {
             _repo = repo;
@@ -44,12 +45,58 @@ namespace TranRoutes.Services
             //    Analayze(n.Destination);
             //}
 
-            toDestination.Add((_source, 0));
-            Analayze(source);
+            //toDestination.Add((_source, 0));
+            //Analayze(source);
+            var result = new List<(string Path, int Distance)>();
+            Find(source, 0, new List<(string Path, int Distance)>(), result);
             return 0;
         }
 
 
+        void Find(string source, int distance, List<(string Path, int Distance)> currentRoute, List<(string Path, int Distance)> r)
+        {
+            var current = (source, distance);
+
+            if (_visited.Contains(current))
+                return;
+
+            _visited.Add(current);
+            currentRoute.Add(current);
+
+            var record = _records.SingleOrDefault(f => f.Source == source);
+            if (record == null)
+            {
+                //r.AddRange(currentRoute);
+                return;
+            }
+            else
+            {
+                foreach (var item in record.NearList)
+                {
+                    Find(item.Destination, item.Distance, currentRoute, r);
+                }
+            }
+
+            currentRoute.RemoveAt(currentRoute.Count - 1);
+            _visited.Remove(current);
+
+        }
+        //void Find(string source, int distance)
+        //{
+        //    var current = (source, distance);
+        //    toDestination.Add(current);
+        //    int sumDistance = toDestination.Sum(s => s.Distance);
+        //    string p = String.Join("=>", toDestination.Select(s => s.Path));
+        //    var newPath = (p, sumDistance);
+        //    if (_routing.Contains(newPath))
+        //        return;
+        //    _routing.Add(newPath);
+
+        //    var route = _records.SingleOrDefault(f => f.Source == source);
+        //    if (route == null) return;
+        //    foreach (var near in route.NearList)
+        //        Find(near.Destination, near.Distance, r);
+        //}
 
         void Analayze(string current)
         {
