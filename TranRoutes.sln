@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35303.130
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TranRoutes", "TranRoutes\TranRoutes.csproj", "{6AD7A5A9-C848-4915-8D38-73140E4CF71F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TranRoutesUnitTest", "TranRoutesUnitTest\TranRoutesUnitTest.csproj", "{C36A0D6D-D5F0-4360-9A84-2B5D5C8CED49}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6AD7A5A9-C848-4915-8D38-73140E4CF71F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6AD7A5A9-C848-4915-8D38-73140E4CF71F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6AD7A5A9-C848-4915-8D38-73140E4CF71F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6AD7A5A9-C848-4915-8D38-73140E4CF71F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C36A0D6D-D5F0-4360-9A84-2B5D5C8CED49}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C36A0D6D-D5F0-4360-9A84-2B5D5C8CED49}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C36A0D6D-D5F0-4360-9A84-2B5D5C8CED49}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C36A0D6D-D5F0-4360-9A84-2B5D5C8CED49}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {035F625D-501B-466E-B655-F1C68C6B2DE5}
+	EndGlobalSection
+EndGlobal
