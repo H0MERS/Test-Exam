@@ -23,30 +23,31 @@ namespace TranRoutes.Infrastructure
             string content = _reader.ReadAsString(file);
             if (!string.IsNullOrWhiteSpace(content))
             {
-                var path = content.Split(Environment.NewLine, StringSplitOptions.None)
+                _routes = new HashSet<Route>(content.Split(Environment.NewLine, StringSplitOptions.None)
                     .Select(s =>
                     {
                         var sp = s.Split(",");
-                        return (from: sp[0], to: sp[1], distance: Convert.ToInt32(sp[2]));
-                    });
+                        //return (from: sp[0], to: sp[1], distance: Convert.ToInt32(sp[2]));
+                        return new Route(sp[0], sp[1], Convert.ToInt32(sp[2]));
+                    }));
 
-                _routes = InitializeConnections(path);
+                //_routes = InitializeConnections(path);
 
             }
             return _routes;
         }
 
-        HashSet<Route> InitializeConnections(IEnumerable<(string from, string to, int distance)> path)
-        {
-            var connections = new HashSet<Route>();
-            foreach (var item in path)
-            {
-                if (!connections.Any(a => a.Source == item.from))
-                    connections.Add(new Route(item.from));
+        //HashSet<Route> InitializeConnections(IEnumerable<(string from, string to, int distance)> path)
+        //{
+        //    var connections = new HashSet<Route>();
+        //    foreach (var item in path)
+        //    {
+        //        if (!connections.Any(a => a.Source == item.from))
+        //            connections.Add(new Route(item.from));
 
-                connections.First(f => f.Source == item.from).AddNear(item.to, item.distance);
-            }
-            return connections;
-        }
+        //        connections.First(f => f.Source == item.from).AddNear(item.to, item.distance);
+        //    }
+        //    return connections;
+        //}
     }
 }

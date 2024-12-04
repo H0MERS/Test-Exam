@@ -1,4 +1,5 @@
-﻿using TranRoutes.Domains;
+﻿using System.ComponentModel;
+using TranRoutes.Domains;
 using TranRoutes.Infrastructure;
 
 namespace TranRoutes.Services
@@ -10,7 +11,11 @@ namespace TranRoutes.Services
     public class CalculateForDistanceByRouteService : ICalculateForDistanceByRouteService
     {
         readonly IRouteRepository _repo;
-        HashSet<Route> routes = new HashSet<Route>();
+        HashSet<Route> _records = new();
+        List<(string Path, int Distance)> _tracingRoute = new();
+        (string Path, int Distance) _route = new();
+        HashSet<string> _visited = new();
+        bool found = false;
         public CalculateForDistanceByRouteService(IRouteRepository repo)
         {
             _repo = repo;
@@ -18,32 +23,49 @@ namespace TranRoutes.Services
 
         public int? Calculate(string path)
         {
-            string[] paths = path.Split("=>");
-            var records = _repo.Get();//.Where(w => w.From == paths[0] || w.To == paths[paths.Length - 1]);
+            
+            _records = _repo.Get();
 
-            for (var c = 0; c < paths.Length - 1; c++)
-            {
-                var stack = new Stack<Route>(records);
-                //FindChild(paths[c], paths[c + 1], stack);
-            }
-            if (routes.Count == (paths.Length - 1))
-                return 0; // routes.Sum(s => s.Distance);
+            string[] spl = path.Split("=>");
+            string source = spl.First();
+            string destination = spl.Last();
+            Find(source,destination,0,path);
+            if (found)
+                return _route.Distance;
             else
                 return null;
         }
 
-
-        void FindChild(string from, string to, Stack<Route> stack)
+        void Find(string source, string destination, int currentDistance, string lookupPath)
         {
+            // Add the current node to the route
+            _tracingRoute.Add((source, currentDistance));
+            _visited.Add(source);
+            // Calculate the current path and total distance
+            string path = String.Join("=>", _tracingRoute.Select(s => s.Path));
+            int totalDistance = _tracingRoute.Sum(s => s.Distance);
 
-            //while (stack.Count > 0)
-            //{
-            //    var route = stack.Pop();
-            //    if (route.From == from && route.To == to)
-            //    {
-            //        routes.Add(route);
-            //    }
-            //}
+            // Check if the destination is reached and the path matches the lookup
+            if (source == destination && path == lookupPath)
+            {
+                found = true;
+                _route = (path, totalDistance);
+                return;
+            }
+
+            // Explore all connected nodes from the current source
+            foreach (var record in _records.Where(rec => rec.Source == source))
+            {
+                if (!found && !_visited.Contains(record.Destination)) // Continue only if the route hasn't been found
+                {
+                    Find(record.Destination, destination, record.Distance, lookupPath);
+                }
+            }
+
+            // Backtrack to explore other paths
+            _tracingRoute.RemoveAt(_tracingRoute.Count - 1);
+            _visited.Remove(source);
         }
+
     }
 }

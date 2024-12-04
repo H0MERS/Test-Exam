@@ -8,6 +8,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Services\TripsBetweenTwoLocation\**" />
+    <EmbeddedResource Remove="Services\TripsBetweenTwoLocation\**" />
+    <None Remove="Services\TripsBetweenTwoLocation\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Services\ShortestPathService.cs" />
+    <Compile Remove="Services\TripsBetweenTwoLocationService.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Assets\Input.txt" />
   </ItemGroup>
 
