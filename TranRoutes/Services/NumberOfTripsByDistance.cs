@@ -27,7 +27,7 @@ namespace TranRoutes.Services
             _records = _repo.Get();
 
             Find(source, 0);
-            return 0;
+            return _routing.Count;
         }
 
         void Find(string source, int distance)
@@ -42,9 +42,9 @@ namespace TranRoutes.Services
                 _routing.Add((path, totalDistance, _tracingRoute.Count - 1));
             }
 
-            foreach (var record in _records.Where(rec => rec.Source == source))
+            foreach (var record in _records.Where(w => w.Source == source))
             {
-                if (totalDistance + record.Distance < _distance)
+                if (totalDistance < _distance)
                 {
                     Find(record.Destination, record.Distance);
                 }

@@ -38,14 +38,12 @@ namespace TranRoutes.Services
 
         void Find(string source, string destination, int currentDistance, string lookupPath)
         {
-            // Add the current node to the route
             _tracingRoute.Add((source, currentDistance));
             _visited.Add(source);
-            // Calculate the current path and total distance
+
             string path = String.Join("=>", _tracingRoute.Select(s => s.Path));
             int totalDistance = _tracingRoute.Sum(s => s.Distance);
 
-            // Check if the destination is reached and the path matches the lookup
             if (source == destination && path == lookupPath)
             {
                 found = true;
@@ -53,10 +51,9 @@ namespace TranRoutes.Services
                 return;
             }
 
-            // Explore all connected nodes from the current source
             foreach (var record in _records.Where(rec => rec.Source == source))
             {
-                if (!found && !_visited.Contains(record.Destination)) // Continue only if the route hasn't been found
+                if (!found && !_visited.Contains(record.Destination))
                 {
                     Find(record.Destination, destination, record.Distance, lookupPath);
                 }

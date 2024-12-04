@@ -7,17 +7,14 @@ namespace TranRoutes.Services
     public interface ITripsBetweenTwoLocationService
     {
         int Get<T>(string source, string destination, int trip) where T : BaseGetTrips, new();
-        //int Get(string source, string destination, Func<HashSet<(string Path, int Length)>, int> func);
+        int Get(string source, string destination, Func<int,bool> func);
     }
     public class TripsBetweenTwoLocationService : ITripsBetweenTwoLocationService
     {
         readonly IRouteRepository _repo;
-        IDictionary<string, int> _routes = new Dictionary<string, int>();
 
         ICollection<Route> _records = new HashSet<Route>();
-        HashSet<(string Path, int Distance)> toDestination = new();
-        HashSet<(string Path, int Length)> path = new();
-
+        List<string> _trips = new List<string>();
         public TripsBetweenTwoLocationService(IRouteRepository repo)
         {
             _repo = repo;
@@ -25,54 +22,39 @@ namespace TranRoutes.Services
 
 
 
-        public int Get<T>(string source, string destination, int trip) where T : BaseGetTrips, new()
+        public int Get<T>(string source, string destination, int stops) where T : BaseGetTrips, new()
         {
-            T trips = new T() { _records = _repo.Get() };
-            trips.AnalysTrips(source, destination, source, trip, (path, trip) =>
-            {
-                _routes.Add(path, trip);
-            });
-
-            return _routes.Count();
+            T trips = new T() { _records = _repo.Get() };            
+            return trips.Get(source, destination, stops);
         }
 
+        public int Get(string source, string destination, Func<int, bool> func)
+        {
+            _records = _repo.Get();
+            Find(source, destination, func, new List<string>());
+            return _trips.Count;
+        }
 
-        //public int Get<T>(string source, string destination, int trip) where T : BaseGetTrips, new()
-        //public int Get2(string source, string destination, Func<HashSet<(string Path, int Length)>, int> func)
-        //{
-        //    _records = _repo.Get();
-        //    toDestination.Add((source, 0));
-        //    Analyze(source, source, destination);
-        //    return func(path);
-        //}
+        void Find(string source, string destination, Func<int, bool> func, List<string> tracingRoute)
+        {
+            tracingRoute.Add(source);
 
-        //void Analyze(string current, string source, string destination)
-        //{
-        //    foreach (var route in _records.Where(w => w.Source == current))
-        //    {
-        //        foreach (var near in route.NearList)
-        //        {
+            string path = String.Join("=>", tracingRoute);
+            int len = tracingRoute.Count - 1;
+            
+            if ((source == destination) && func(len) && (tracingRoute.Count > 1))
+            {
+                _trips.Add(path);
+            }
 
-        //            toDestination.Add((near.Destination, near.Distance));
-        //            var p = String.Join("=>", toDestination.Select(s => s.Path));
-        //            var l = p.Split("=>").Length - 1;
-        //            var newPath = (p, l);
-        //            if (near.Destination == destination)
-        //            {
-        //                path.Add(newPath);
-        //                toDestination.Clear();
-        //                toDestination.Add((source, 0));
-        //                return;
-        //            }
+            foreach (var record in _records.Where(w=> w.Source == source))
+            {
+                if(func(len))
+                    Find(record.Destination,destination,func, tracingRoute);
+            }
 
-        //            if (!path.Contains(newPath))
-        //                Analyze(near.Destination, source, destination);
-        //        }
-        //    }
-        //}
-
-
-
+            tracingRoute.RemoveAt(tracingRoute.Count-1);
+        }
     }
 
 

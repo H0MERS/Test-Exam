@@ -5,7 +5,7 @@ namespace TranRoutes.Services
 {
     public interface IShortestPathService
     {
-        int Find(string source, string destination);
+        int Get(string source, string destination);
     }
     public class ShortestPathService : IShortestPathService
     {
@@ -15,42 +15,38 @@ namespace TranRoutes.Services
             _repo = repo;
         }
         ICollection<Route> _records = new HashSet<Route>();
-
-        HashSet<(string Path, int Distance)> toDestination = new HashSet<(string, int)>();
-        HashSet<(string Path, int Distance)> shortestPath = new();
-        public int Find(string source, string destination)
+        (string Path, int Distance) _shortestPath = new("",int.MaxValue);
+        int _previous = int.MaxValue;
+        List<string> _visited = new List<string>();
+        public int Get(string source, string destination)
         {
             _records = _repo.Get();
-            toDestination.Add((source, 0));
-            Analyze(source, destination);
-            return shortestPath.Min(m => m.Distance);
+            Find(source, destination, 0, new List<string>());
+            return _shortestPath.Distance;
 
         }
 
-        void Analyze(string current, string destination)
+        void Find(string current, string destination, int cumulativeDistance, List<string> visited)
         {
-            foreach (var route in _records.Where(w => w.Source == current))
+            visited.Add(current);
+
+            if (current == destination && visited.Count > 1)
             {
-                var sort = route.NearList.OrderBy(o => o.Distance);
-
-                foreach (var near in sort)
+                if (cumulativeDistance < _previous)
                 {
-                    toDestination.Add((near.Destination, near.Distance));
-                    int distance = toDestination.Sum(s => s.Distance);
-                    string p = String.Join("=>", toDestination.Select(s => s.Path));
-                    var newPath = (p, distance);
-                    if ((near.Destination == destination))
-                    {
-                        shortestPath.Add(newPath);
-                        return;
-                    }
-                    if (!shortestPath.Contains(newPath))
-                        Analyze(near.Destination, destination);
+                    _previous = cumulativeDistance;
+                    _shortestPath = (string.Join("=>", visited), cumulativeDistance);
+                }
+            }
 
+            foreach (var record in _records.Where(e => e.Source == current))
+            {
+                if (!visited.Contains(record.Destination) || record.Destination == destination)
+                {
+                    Find(record.Destination, destination, cumulativeDistance + record.Distance, new List<string>(visited));
                 }
             }
         }
-
 
     }
 }

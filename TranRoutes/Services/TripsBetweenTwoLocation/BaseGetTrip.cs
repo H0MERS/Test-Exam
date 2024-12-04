@@ -4,7 +4,9 @@ namespace TranRoutes.Services.TripsBetweenTwoLocation
 {
     public abstract class BaseGetTrips
     {
-        public ICollection<Route> _records;
-        public abstract void AnalysTrips(string source, string destination, string path, int trip, Action<string, int> result);
+        public ICollection<Route> _records = new List<Route>();
+        public List<string> _trips = new List<string>();
+        protected List<string> tracingRoute = new List<string>();
+        public abstract int Get(string source, string destination, int stops);
     }
 }
