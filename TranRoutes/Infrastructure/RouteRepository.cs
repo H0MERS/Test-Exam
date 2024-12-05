@@ -26,28 +26,13 @@ namespace TranRoutes.Infrastructure
                 _routes = new HashSet<Route>(content.Split(Environment.NewLine, StringSplitOptions.None)
                     .Select(s =>
                     {
-                        var sp = s.Split(",");
-                        //return (from: sp[0], to: sp[1], distance: Convert.ToInt32(sp[2]));
+                        var sp = s.Split(",");                        
                         return new Route(sp[0], sp[1], Convert.ToInt32(sp[2]));
                     }));
 
-                //_routes = InitializeConnections(path);
 
             }
             return _routes;
         }
-
-        //HashSet<Route> InitializeConnections(IEnumerable<(string from, string to, int distance)> path)
-        //{
-        //    var connections = new HashSet<Route>();
-        //    foreach (var item in path)
-        //    {
-        //        if (!connections.Any(a => a.Source == item.from))
-        //            connections.Add(new Route(item.from));
-
-        //        connections.First(f => f.Source == item.from).AddNear(item.to, item.distance);
-        //    }
-        //    return connections;
-        //}
     }
 }
