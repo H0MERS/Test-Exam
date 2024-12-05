@@ -55,7 +55,7 @@ This service is reused but with a modified implementation for problem 10.
 - The input data can be customized by modifying `Input.text` to test different scenarios.
 
 
-
+---
 ## Usage
 1. Clone this repository.
 2. Place your input data in the `Input.text` file.
