@@ -54,15 +54,9 @@ This service is reused but with a modified implementation for problem 10.
 - Each test class contains methods (Facts) specifically addressing the problem it solves.
 - The input data can be customized by modifying `Input.text` to test different scenarios.
 
----
+
 
 ## Usage
 1. Clone this repository.
 2. Place your input data in the `Input.text` file.
-3. Run the program to compute solutions for the various problems.
-4. Use the provided unit tests to verify functionality or test custom inputs.
-
----
-
-## Contributing
-Contributions are welcome! If you find any bugs or want to propose improvements, feel free to open an issue or submit a pull request.
+3. Use the provided unit tests to verify functionality or test custom inputs.
